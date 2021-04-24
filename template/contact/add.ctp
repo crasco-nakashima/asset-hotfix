@@ -86,7 +86,7 @@
 		</div>
 	</li>
 	<li>
-		<div class="g-recaptcha" data-callback="syncerRecaptchaCallback" data-sitekey="6Le-z6saAAAAAGd8AZ1Po-XwxgpZSiz_46H8HRVc"></div>
+		<div class="g-recaptcha" data-callback="syncerRecaptchaCallback" data-sitekey=<?=GOOGLE_RECAPTHA_SITE_KEY?>></div>
 	</li>
 </ul>
 <button type="submit" class="orangeBtn" title="送信" name="send" disabled="disabled" id="js-submit-button">送信</button>

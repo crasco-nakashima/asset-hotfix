@@ -83,7 +83,7 @@
 		<div class="magazine" id="label-agree"><input type="checkbox" value="1" name="agree">同意する</div>
 	</li>
 	<li>
-		<div class="g-recaptcha" data-callback="syncerRecaptchaCallback" data-sitekey="6Le-z6saAAAAAGd8AZ1Po-XwxgpZSiz_46H8HRVc"></div>
+		<div class="g-recaptcha" data-callback="syncerRecaptchaCallback" data-sitekey=<?=GOOGLE_RECAPTHA_SITE_KEY?>></div>
 	</li>
 </ul>
 <button name="send" title="送信" class="orangeBtn" type="submit" disabled="disabled" id="js-submit-button">送信</button>

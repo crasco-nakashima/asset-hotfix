@@ -19,6 +19,7 @@ use Cake\Event\Event;
 use Cake\Network\Email\Email;
 use Cake\ORM\TableRegistry;
 use Cake\Log\Log;
+use Cake\Network\Http\Client;
 
 /**
 * Application Controller
@@ -240,9 +241,28 @@ class AppController extends Controller
     }
     if ($this->request->is('post')) {
       $data = $this->request->data;
+
+      //recaptcha用の処理
+      // エラー判定
+      if( !isset( $data['g-recaptcha-response'] ) )
+      {
+        $data['g-recaptcha-response'] = '';
+      }
+      // シークレットキー
+      $secret_key = GOOGLE_RECAPTHA_SECRET_KEY;
+      // エンドポイント
+      $endpoint = 'https://www.google.com/recaptcha/api/siteverify?secret=' . $secret_key . '&response=' . $data['g-recaptcha-response'] ;
+      // 判定結果の取得
+      $http = new Client();
+      $response = $http->get($endpoint);
+      $json = $response->json;
+      $this->log('recaptcha-------------------------------', 'debug');
+      $this->log($data['g-recaptcha-response'], 'debug');
+      $this->log($response->json, 'debug');
+
       if ($data['agree'] == 1) {
         $contact = $contactTable->patchEntity($contact, $data);
-        if ($contactTable->save($contact)) {
+        if ($contactTable->save($contact) && $json['success']) {
           $prefTable = TableRegistry::get('Pref');
           $prefName = $prefTable->get($contact->pref_id)->name;
           $mailParams = array();

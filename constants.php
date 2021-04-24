@@ -131,3 +131,5 @@ define('FB_PAGES', '630529703653857');
 define('ASSET_URL', 'https://asset.crasco.jp');
 define('AM_URL', 'https://am.crasco.jp'); 
 
+define('GOOGLE_RECAPTHA_SITE_KEY', '6Le-z6saAAAAAGd8AZ1Po-XwxgpZSiz_46H8HRVc'); 
+define('GOOGLE_RECAPTHA_SECRET_KEY', '6Le-z6saAAAAAEfhAoWSO_cywNLbBxrcePjsVpAc'); 
