@@ -109,7 +109,7 @@
 			</div>
 		</li>
 		<li>
-			<div class="g-recaptcha" data-callback="syncerRecaptchaCallback" data-sitekey=<?= GOOGLE_RECAPTHA_SITE_KEY ?>></div>
+			<div class="g-recaptcha" data-callback="syncerRecaptchaCallback" data-sitekey=<?= AM_GOOGLE_RECAPTHA_SITE_KEY ?>></div>
 		</li>
 	</ul>
 	<div align="center">

@@ -331,7 +331,14 @@ class AppController extends Controller
       $request['g-recaptcha-response'] = '';
     }
     // シークレットキー
-    $secret_key = GOOGLE_RECAPTHA_SECRET_KEY;
+    if ($_SERVER['HTTP_HOST']=='asset.crasco.jp') {
+      $secret_key = GOOGLE_RECAPTHA_SECRET_KEY;
+    } elseif ($_SERVER['HTTP_HOST']=='am.crasco.jp') {
+      $secret_key = AM_GOOGLE_RECAPTHA_SECRET_KEY;
+    } else {
+      $secret_key = '';
+    }
+    
     // エンドポイント
     $endpoint = 'https://www.google.com/recaptcha/api/siteverify?secret=' . $secret_key . '&response=' . $request['g-recaptcha-response'];
     // 判定結果の取得
