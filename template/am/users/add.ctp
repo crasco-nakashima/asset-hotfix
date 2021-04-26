@@ -33,43 +33,59 @@
 		<li>
 			<label for="name" class="">お名前</label>
 			<div class="input-box">
-				<?php echo $this->Form->input('name', ['class'=> 'input-text required-entry',
-				'title' => 'お名前', 'label' => false]); ?>
+				<?php echo $this->Form->input('name', [
+					'class' => 'input-text required-entry',
+					'title' => 'お名前', 'label' => false
+				]); ?>
 			</div>
 		</li>
 		<li>
 			<label for="furigana" class="">フリガナ</label>
 			<div class="input-box">
-				<?php echo $this->Form->input('furigana', ['class'=> 'input-text required-entry',
-				'title' => 'フリガナ', 'label' => false]); ?>
+				<?php echo $this->Form->input('furigana', [
+					'class' => 'input-text required-entry',
+					'title' => 'フリガナ', 'label' => false
+				]); ?>
 			</div>
 		</li>
 		<li>
 			<label for="zip1" class="">郵便番号</label>
 			<div class="input-box">
-				<?php echo $this->Form->text('zip1', ['class'=> 'input-text required-entry w100',
-				'type' => 'name', 'title' => '郵便番号', 'label' => false]); ?>
-				- <?php echo $this->Form->text('zip2', ['class'=> 'input-text required-entry w100',
-				'type' => 'name', 'title' => '郵便番号', 'label' => false, 'id' => 'divzip']); ?>
+				<?php echo $this->Form->text('zip1', [
+					'class' => 'input-text required-entry w100',
+					'type' => 'name', 'title' => '郵便番号', 'label' => false
+				]); ?>
+				- <?php echo $this->Form->text('zip2', [
+						'class' => 'input-text required-entry w100',
+						'type' => 'name', 'title' => '郵便番号', 'label' => false, 'id' => 'divzip'
+					]); ?>
 			</div>
 		</li>
 		<li>
 			<label for="pref_id" class="">住所</label>
 			<div class="input-box input_style">
 				<?php echo $this->Form->select('pref_id', $pref, []); ?>
-				<?php echo $this->Form->text('district', ['class'=> 'input-text required-entry',
-				'title' => '市区町村', 'placeholder' => '市区町村']); ?>
-				<?php echo $this->Form->text('sub_address', ['class'=> 'input-text required-entry',
-				'title' => '以下住所', 'placeholder' => '以下住所']); ?>
-				<?php echo $this->Form->text('mansion', ['class'=> 'input-text required-entry',
-				'title' => 'マンション名', 'placeholder' => 'マンション名']); ?>
+				<?php echo $this->Form->text('district', [
+					'class' => 'input-text required-entry',
+					'title' => '市区町村', 'placeholder' => '市区町村'
+				]); ?>
+				<?php echo $this->Form->text('sub_address', [
+					'class' => 'input-text required-entry',
+					'title' => '以下住所', 'placeholder' => '以下住所'
+				]); ?>
+				<?php echo $this->Form->text('mansion', [
+					'class' => 'input-text required-entry',
+					'title' => 'マンション名', 'placeholder' => 'マンション名'
+				]); ?>
 			</div>
 		</li>
 		<li>
 			<label for="phone_number" class="">お電話番号（ハイフン無し　例：0333330000</label>
 			<div class="input-box">
-				<?php echo $this->Form->text('phone_number', ['class'=> 'input-text required-entry',
-				'title' => 'お電話番号', 'type' => 'number']); ?>
+				<?php echo $this->Form->text('phone_number', [
+					'class' => 'input-text required-entry',
+					'title' => 'お電話番号', 'type' => 'number'
+				]); ?>
 			</div>
 		</li>
 		<li>
