@@ -133,3 +133,6 @@ define('AM_URL', 'https://am.crasco.jp');
 
 define('GOOGLE_RECAPTHA_SITE_KEY', '6Le-z6saAAAAAGd8AZ1Po-XwxgpZSiz_46H8HRVc'); 
 define('GOOGLE_RECAPTHA_SECRET_KEY', '6Le-z6saAAAAAEfhAoWSO_cywNLbBxrcePjsVpAc'); 
+
+define('AM_GOOGLE_RECAPTHA_SITE_KEY', '6LeD2LkaAAAAANMp-eeKWbtUKiea26qA9wr8ZzFA');
+define('AM_GOOGLE_RECAPTHA_SECRET_KEY', '6LeD2LkaAAAAAH5gzFyMpM8-x3GrSaGBdvP8qMAt');

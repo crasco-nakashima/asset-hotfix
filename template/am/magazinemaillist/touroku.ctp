@@ -108,10 +108,24 @@
 				]); ?>
 			</div>
 		</li>
+		<li>
+			<div class="g-recaptcha" data-callback="syncerRecaptchaCallback" data-sitekey=<?= GOOGLE_RECAPTHA_SITE_KEY ?>></div>
+		</li>
 	</ul>
 	<div align="center">
-		<button name="create_action" title="購読する" class="btn_style01" type="submit">購読する</button>
-		<button name="taikai_action" title="購読を解除する" class="btn_style01" type="submit" onclick="return confirm('メールマガジン退会しますか？');">購読を解除する</button>
+		<button name="create_action" title="購読する" class="btn_style01" type="submit" disabled="disabled" id="js-submit-button">購読する</button>
+		<button name="taikai_action" title="購読を解除する" class="btn_style01" type="submit" disabled="disabled" id="js-unscribe-button" onclick="return confirm('メールマガジン退会しますか？');">購読を解除する</button>
 	</div>
 	<?= $this->Form->end() ?>
 </div>
+
+<script>
+function syncerRecaptchaCallback( code )
+{
+	if(code != "")
+	{
+		document.getElementById("js-submit-button").removeAttribute("disabled");
+		document.getElementById("js-unscribe-button").removeAttribute("disabled");
+	}
+}
+</script>

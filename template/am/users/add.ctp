@@ -99,8 +99,21 @@
 			<label class="required"><em>*</em>プライバシーポリシー</label>
 			<div class="magazine" id="label-agree"><input type="checkbox" value="1" name="agree">同意する</div>
 		</li>
+		<li>
+			<div class="g-recaptcha" data-callback="syncerRecaptchaCallback" data-sitekey=<?= GOOGLE_RECAPTHA_SITE_KEY ?>></div>
+		</li>
 	</ul>
-	<button name="send" title="送信" class="btn_style01" type="submit">送信</button>
+	<button name="send" title="送信" class="btn_style01" type="submit" disabled="disabled" id="js-submit-button">送信</button>
 	<?= $this->Form->end() ?>
 	<p>ご入力いただいたメールアドレスなどの個人情報およびメッセージ内容に含まれる個人情報について、当社が定めるプライバシーポリシーに従い適切にお取り扱いいたします。お問い合わせの際は、必ず<a href="/company/privacypolicy">プライバシーポリシー</a>をご一読いただき、同意のうえご利用ください。</p>
 </div>
+
+<script>
+function syncerRecaptchaCallback( code )
+{
+	if(code != "")
+	{
+		document.getElementById("js-submit-button").removeAttribute("disabled");
+	}
+}
+</script>
