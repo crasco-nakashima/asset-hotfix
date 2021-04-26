@@ -1,17 +1,19 @@
 <?php
+
 /**
-* CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
-* Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
-*
-* Licensed under The MIT License
-* For full copyright and license information, please see the LICENSE.txt
-* Redistributions of files must retain the above copyright notice.
-*
-* @copyright Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
-* @link      http://cakephp.org CakePHP(tm) Project
-* @since     0.2.9
-* @license   http://www.opensource.org/licenses/mit-license.php MIT License
-*/
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link      http://cakephp.org CakePHP(tm) Project
+ * @since     0.2.9
+ * @license   http://www.opensource.org/licenses/mit-license.php MIT License
+ */
+
 namespace App\Controller;
 
 use Cake\Controller\Controller;
@@ -22,23 +24,23 @@ use Cake\Log\Log;
 use Cake\Network\Http\Client;
 
 /**
-* Application Controller
-*
-* Add your application-wide methods in the class below, your controllers
-* will inherit them.
-*
-* @link http://book.cakephp.org/3.0/en/controllers.html#the-app-controller
-*/
+ * Application Controller
+ *
+ * Add your application-wide methods in the class below, your controllers
+ * will inherit them.
+ *
+ * @link http://book.cakephp.org/3.0/en/controllers.html#the-app-controller
+ */
 class AppController extends Controller
 {
   public $components = array('RequestHandler');
   /**
-  * Initialization hook method.
-  *
-  * Use this method to add common initialization code like loading components.
-  *
-  * @return void
-  */
+   * Initialization hook method.
+   *
+   * Use this method to add common initialization code like loading components.
+   *
+   * @return void
+   */
   public function initialize()
   {
     parent::initialize();
@@ -57,13 +59,11 @@ class AppController extends Controller
     return $Errmsg;
   }
 
-  public function sprintf2($str='', $vars=array(), $char='%')
+  public function sprintf2($str = '', $vars = array(), $char = '%')
   {
     if (!$str) return '';
-    if (count($vars) > 0)
-    {
-      foreach ($vars as $k => $v)
-      {
+    if (count($vars) > 0) {
+      foreach ($vars as $k => $v) {
         $str = str_replace($char . $k, $v, $str);
       }
     }
@@ -77,16 +77,16 @@ class AppController extends Controller
     $honbun = $this->sprintf2($autoSendMail->honbun, $param);
     try {
       if ($transport->class_name == 'sendmail') {
-        $headers = 'From: '. $transport->email . "\r\n" .
-        'Reply-To: ' . $transport->email . "\r\n" .
-        'X-Mailer: PHP/' . phpversion();
+        $headers = 'From: ' . $transport->email . "\r\n" .
+          'Reply-To: ' . $transport->email . "\r\n" .
+          'X-Mailer: PHP/' . phpversion();
         $check = mail($email, $autoSendMail->title, $honbun, $headers);
         if ($check) {
           $this->log('enter sendmail true!!!!!!', 'debug');
         } else {
           $this->log('enter sendmail false!!!!!!', 'debug');
         }
-      }else {
+      } else {
         Email::configTransport($transport->name, [
           'host' => $transport->host,
           'port' => $transport->port,
@@ -94,9 +94,15 @@ class AppController extends Controller
           'password' => $transport->password,
           'className' => $transport->class_name
         ]);
-        Email::deliver($email, $autoSendMail->title, $honbun,
-        ['from' => $transport->email,
-        'transport' => $transport->name]);
+        Email::deliver(
+          $email,
+          $autoSendMail->title,
+          $honbun,
+          [
+            'from' => $transport->email,
+            'transport' => $transport->name
+          ]
+        );
       }
     } catch (\Exception  $e) {
       $this->log(__('エラー・送信できませんでした。'), 'debug');
@@ -112,7 +118,7 @@ class AppController extends Controller
 
     //check if logged in
     $isLogged = $this->request->session()->check('Auth.User');
-    if($isLogged){
+    if ($isLogged) {
       $auth = $this->request->session()->read('Auth.User');
       $magazineMailList->email = $auth['mail'];
       if ($magazineMailListTable->exists(['email' => $auth['mail']])) {
@@ -125,33 +131,33 @@ class AppController extends Controller
       $data = $this->request->data;
       //マガジンメールのarrayをstringにする
       if ($data['magazine_mail'] != null) {
-        $data['magazine_mail'] = implode(',',$data['magazine_mail']);
+        $data['magazine_mail'] = implode(',', $data['magazine_mail']);
         $this->log('data maga: ' . $data['magazine_mail'], 'debug');
         if (!$isLogged) {
           if ($magazineMailListTable->exists(['email' => $data['email']])) {
             $magazineMailList = $magazineMailListTable->get($data['email']);
           }
-        }else {
+        } else {
           $data['email'] = $magazineMailList->email;
         }
-      }else {
+      } else {
         $this->Flash->error_web(__('受信先を選択してください。'));
-        $this->set('magazineMailList',$magazineMailList);
+        $this->set('magazineMailList', $magazineMailList);
         return;
       }
       $magazineMailList = $magazineMailListTable->patchEntity($magazineMailList, $data);
       if ($magazineMailListTable->save($magazineMailList)) {
         $this->Flash->success_web(__('保存しました。'));
-		$mailParams = array();
-		$mailParams['email'] = $magazineMailList->email;
-		$this->sendNotifyMail($magazineMailList->email, AUTO_SEND_MAIL_NEWSLETTER_KOUDOKU, $mailParams);
-		$this->sendNotifyMail('asset@crasco.jp', AUTO_SEND_MAIL_NEWSLETTER_KOUDOKU, $mailParams);
+        $mailParams = array();
+        $mailParams['email'] = $magazineMailList->email;
+        $this->sendNotifyMail($magazineMailList->email, AUTO_SEND_MAIL_NEWSLETTER_KOUDOKU, $mailParams);
+        $this->sendNotifyMail('asset@crasco.jp', AUTO_SEND_MAIL_NEWSLETTER_KOUDOKU, $mailParams);
         $this->redirect('/newsletter');
       } else {
         $this->Flash->error_web(__('保存できませんでした。'));
       }
     }
-    $this->set('magazineMailList',$magazineMailList);
+    $this->set('magazineMailList', $magazineMailList);
   }
 
   public function taikaiNewsletter($email = null)
@@ -161,22 +167,21 @@ class AppController extends Controller
     //check if logged in
     $isLogged = $this->request->session()->check('Auth.User');
     //taikai when logged in
-    if($isLogged)
-    {
+    if ($isLogged) {
       $auth = $this->request->session()->read('Auth.User');
       $magazineMailList->email = $auth['mail'];
       if ($magazineMailListTable->exists(['email' => $auth['mail']])) {
         $magazineMailList = $magazineMailListTable->get($auth['mail']);
         if ($magazineMailListTable->delete($magazineMailList)) {
-		  $mailParams = array();
-		  $mailParams['email'] = $magazineMailList->email;
-		  $this->sendNotifyMail($magazineMailList->email, AUTO_SEND_MAIL_NEWSLETTER_KAIJO, $mailParams);
-		  $this->sendNotifyMail('asset@crasco.jp', AUTO_SEND_MAIL_NEWSLETTER_KAIJO, $mailParams);
+          $mailParams = array();
+          $mailParams['email'] = $magazineMailList->email;
+          $this->sendNotifyMail($magazineMailList->email, AUTO_SEND_MAIL_NEWSLETTER_KAIJO, $mailParams);
+          $this->sendNotifyMail('asset@crasco.jp', AUTO_SEND_MAIL_NEWSLETTER_KAIJO, $mailParams);
           $this->Flash->success_web(__('メールマガジン購読を解除しました。'));
         } else {
           $this->Flash->error_web(__('メールマガジン購読を解除できませんでした。'));
         }
-      }else {
+      } else {
         $this->Flash->error_web(__('メールマガジンはまだ登録していません。'));
       }
       return $this->redirect('/newsletter');
@@ -186,16 +191,16 @@ class AppController extends Controller
     if ($magazineMailListTable->exists(['email' => $data['email']])) {
       $magazineMailList = $magazineMailListTable->get($data['email']);
       if ($magazineMailListTable->delete($magazineMailList)) {
-	  	$mailParams = array();
-		$mailParams['email'] = $magazineMailList->email;
-		$this->sendNotifyMail($magazineMailList->email, AUTO_SEND_MAIL_NEWSLETTER_KAIJO, $mailParams);
-		$this->sendNotifyMail('asset@crasco.jp', AUTO_SEND_MAIL_NEWSLETTER_KAIJO, $mailParams);
+        $mailParams = array();
+        $mailParams['email'] = $magazineMailList->email;
+        $this->sendNotifyMail($magazineMailList->email, AUTO_SEND_MAIL_NEWSLETTER_KAIJO, $mailParams);
+        $this->sendNotifyMail('asset@crasco.jp', AUTO_SEND_MAIL_NEWSLETTER_KAIJO, $mailParams);
         $this->Flash->success_web(__('メールマガジン購読を解除しました。'));
       } else {
         $this->Flash->error_web(__('メールマガジンはまだ登録していません。'));
       }
       return $this->redirect('/newsletter');
-    }else {
+    } else {
       $this->Flash->error_web('メールマガジンはまだ登録していません。');
     }
     return $this->redirect('/newsletter');
@@ -211,21 +216,20 @@ class AppController extends Controller
     $this->log('site: ' . $_SERVER['HTTP_HOST'], 'debug');
     switch ($_SERVER['HTTP_HOST']) {
       case 'asset.crasco.jp':
-      $contact->site_name = '資産運用';
-      break;
+        $contact->site_name = '資産運用';
+        break;
       case 'am.crasco.jp':
-      $contact->site_name = '不動産';
-      break;
+        $contact->site_name = '不動産';
+        break;
       case 'pm.crasco.jp':
-      $this->log('site: enter ' . $_SERVER['HTTP_HOST'], 'debug');
-      $contact->site_name = '賃貸経営';
-      break;
+        $this->log('site: enter ' . $_SERVER['HTTP_HOST'], 'debug');
+        $contact->site_name = '賃貸経営';
+        break;
     }
 
     //check if logged in
     $isLogged = $this->request->session()->check('Auth.User');
-    if($isLogged)
-    {
+    if ($isLogged) {
       $auth = $this->request->session()->read('Auth.User');
       $contact->name = $auth['name'];
       $contact->furigana = $auth['furigana'];
@@ -244,14 +248,13 @@ class AppController extends Controller
 
       //recaptcha用の処理
       // エラー判定
-      if( !isset( $data['g-recaptcha-response'] ) )
-      {
+      if (!isset($data['g-recaptcha-response'])) {
         $data['g-recaptcha-response'] = '';
       }
       // シークレットキー
       $secret_key = GOOGLE_RECAPTHA_SECRET_KEY;
       // エンドポイント
-      $endpoint = 'https://www.google.com/recaptcha/api/siteverify?secret=' . $secret_key . '&response=' . $data['g-recaptcha-response'] ;
+      $endpoint = 'https://www.google.com/recaptcha/api/siteverify?secret=' . $secret_key . '&response=' . $data['g-recaptcha-response'];
       // 判定結果の取得
       $http = new Client();
       $response = $http->get($endpoint);
@@ -279,7 +282,7 @@ class AppController extends Controller
           $mailParams['phone_number'] = $contact->phone_number;
           $mailParams['fax_number'] = $contact->fax_number;
           $this->sendNotifyMail('asset@crasco.jp', AUTO_SEND_MAIL_CONTACT, $mailParams);
-          $this->set('title', 'お問い合わせ' . DS .ASSET_TITLE_SUFFIX);
+          $this->set('title', 'お問い合わせ' . DS . ASSET_TITLE_SUFFIX);
           $this->set('keywords', DEFAULT_KEYWORDS);
           $this->set('description', DEFAULT_DESCRIPTION);
           $this->set('thumnail', DEFAULT_THUMNAIL);
@@ -307,12 +310,12 @@ class AppController extends Controller
       if (isset($data['magazine_mail']) && $data['magazine_mail'] != null) {
         $saki = implode(',', $data['magazine_mail']);
         $data['magazine_mail'] = $saki;
-		if ($saki != $magazineMailList->magazine_mail) {
-			$mailParams = array();
-			$mailParams['email'] = $magazineMailList->email;
-			$this->sendNotifyMail($magazineMailList->email, AUTO_SEND_MAIL_NEWSLETTER_KOUDOKU, $mailParams);
-			$this->sendNotifyMail('asset@crasco.jp', AUTO_SEND_MAIL_NEWSLETTER_KOUDOKU, $mailParams);
-		}
+        if ($saki != $magazineMailList->magazine_mail) {
+          $mailParams = array();
+          $mailParams['email'] = $magazineMailList->email;
+          $this->sendNotifyMail($magazineMailList->email, AUTO_SEND_MAIL_NEWSLETTER_KOUDOKU, $mailParams);
+          $this->sendNotifyMail('asset@crasco.jp', AUTO_SEND_MAIL_NEWSLETTER_KOUDOKU, $mailParams);
+        }
       }
       $magazineMailList = $magazineMailListTable->patchEntity($magazineMailList, $data);
       $magazineMailListTable->save($magazineMailList);
@@ -322,13 +325,10 @@ class AppController extends Controller
       $data['magazine_mail'] = $saki;
       $magazineMailList = $magazineMailListTable->patchEntity($magazineMailList, $data);
       $magazineMailListTable->save($magazineMailList);
-	  $mailParams = array();
-	  $mailParams['email'] = $magazineMailList->email;
-	  $this->sendNotifyMail($magazineMailList->email, AUTO_SEND_MAIL_NEWSLETTER_KOUDOKU, $mailParams);
-	  $this->sendNotifyMail('asset@crasco.jp', AUTO_SEND_MAIL_NEWSLETTER_KOUDOKU, $mailParams);
+      $mailParams = array();
+      $mailParams['email'] = $magazineMailList->email;
+      $this->sendNotifyMail($magazineMailList->email, AUTO_SEND_MAIL_NEWSLETTER_KOUDOKU, $mailParams);
+      $this->sendNotifyMail('asset@crasco.jp', AUTO_SEND_MAIL_NEWSLETTER_KOUDOKU, $mailParams);
     }
-
   }
-
-
 }
