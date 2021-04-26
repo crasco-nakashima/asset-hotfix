@@ -129,6 +129,8 @@ class AppController extends Controller
 
     if ($this->request->is(['patch', 'post', 'put'])) {
       $data = $this->request->data;
+      $json = $this->getRecaptchaJson($data);
+
       //マガジンメールのarrayをstringにする
       if ($data['magazine_mail'] != null) {
         $data['magazine_mail'] = implode(',', $data['magazine_mail']);
@@ -146,7 +148,7 @@ class AppController extends Controller
         return;
       }
       $magazineMailList = $magazineMailListTable->patchEntity($magazineMailList, $data);
-      if ($magazineMailListTable->save($magazineMailList)) {
+      if ($json['success'] && $magazineMailListTable->save($magazineMailList)) {
         $this->Flash->success_web(__('保存しました。'));
         $mailParams = array();
         $mailParams['email'] = $magazineMailList->email;
@@ -188,9 +190,10 @@ class AppController extends Controller
     }
     //taikai when not logging in (takai email input needed)
     $data = $this->request->data;
+    $json = $this->getRecaptchaJson($data);
     if ($magazineMailListTable->exists(['email' => $data['email']])) {
       $magazineMailList = $magazineMailListTable->get($data['email']);
-      if ($magazineMailListTable->delete($magazineMailList)) {
+      if ($json['success'] && $magazineMailListTable->delete($magazineMailList)) {
         $mailParams = array();
         $mailParams['email'] = $magazineMailList->email;
         $this->sendNotifyMail($magazineMailList->email, AUTO_SEND_MAIL_NEWSLETTER_KAIJO, $mailParams);
@@ -245,27 +248,11 @@ class AppController extends Controller
     }
     if ($this->request->is('post')) {
       $data = $this->request->data;
-
-      //recaptcha用の処理
-      // エラー判定
-      if (!isset($data['g-recaptcha-response'])) {
-        $data['g-recaptcha-response'] = '';
-      }
-      // シークレットキー
-      $secret_key = GOOGLE_RECAPTHA_SECRET_KEY;
-      // エンドポイント
-      $endpoint = 'https://www.google.com/recaptcha/api/siteverify?secret=' . $secret_key . '&response=' . $data['g-recaptcha-response'];
-      // 判定結果の取得
-      $http = new Client();
-      $response = $http->get($endpoint);
-      $json = $response->json;
-      $this->log('recaptcha-------------------------------', 'debug');
-      $this->log($data['g-recaptcha-response'], 'debug');
-      $this->log($response->json, 'debug');
+      $json = $this->getRecaptchaJson($data);
 
       if ($data['agree'] == 1) {
         $contact = $contactTable->patchEntity($contact, $data);
-        if ($contactTable->save($contact) && $json['success']) {
+        if ($json['success'] && $contactTable->save($contact)) {
           $prefTable = TableRegistry::get('Pref');
           $prefName = $prefTable->get($contact->pref_id)->name;
           $mailParams = array();
@@ -330,5 +317,31 @@ class AppController extends Controller
       $this->sendNotifyMail($magazineMailList->email, AUTO_SEND_MAIL_NEWSLETTER_KOUDOKU, $mailParams);
       $this->sendNotifyMail('asset@crasco.jp', AUTO_SEND_MAIL_NEWSLETTER_KOUDOKU, $mailParams);
     }
+  }
+  /**
+   * GoogleRecaptchaの結果を検証して、結果をjsonで返却する
+   *
+   * @param array $request
+   * @return void
+   */
+  private function getRecaptchaJson($request = [])
+  {
+    // エラー判定
+    if (!isset($request['g-recaptcha-response'])) {
+      $request['g-recaptcha-response'] = '';
+    }
+    // シークレットキー
+    $secret_key = GOOGLE_RECAPTHA_SECRET_KEY;
+    // エンドポイント
+    $endpoint = 'https://www.google.com/recaptcha/api/siteverify?secret=' . $secret_key . '&response=' . $request['g-recaptcha-response'];
+    // 判定結果の取得
+    $http = new Client();
+    $response = $http->get($endpoint);
+    $json = $response->json;
+    $this->log('recaptcha-------------------------------', 'debug');
+    $this->log($request['g-recaptcha-response'], 'debug');
+    $this->log($response->json, 'debug');
+
+    return $json;
   }
 }
